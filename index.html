@@ -52,6 +52,8 @@ table{border-collapse:collapse}
 .badge{font-size:10px;font-weight:700}
 .stk{padding:2px 6px;border-radius:3px;font-weight:800}
 .chip{color:#7C4A21;background:#F3E5D6;padding:2px 6px;border-radius:3px}
+.mgr-badges{display:flex;gap:3px;flex-wrap:wrap;margin-top:3px}
+.chip-sum{display:none}
 .share-btn{background:#7C4A21;color:#fff;border-radius:6px;padding:8px 12px;font-size:12px;font-weight:800;letter-spacing:.04em}
 .alert{background:#FEF3C7;border:1px solid #E8B15A;border-radius:8px;padding:12px 14px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
 .alert strong{display:block;font-size:14px;color:#7C4A21}
@@ -98,6 +100,8 @@ table{border-collapse:collapse}
 .draft-cards,.nfl-m{display:block!important}
 .draft-round h3,.draft-pick .meta{font-size:12px!important}
 .pill{font-size:12px!important}
+.st .mgr-badges.has-many{display:none}
+.st .mgr-line .chip-sum{display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:16px;padding:0 4px;line-height:1}
 }
 </style>
 </head>
@@ -144,16 +148,15 @@ function logoSrc(abbr){return abbr?"https://a.espncdn.com/combiner/i?img=/i/team
 function logo(t){return logoSrc(ABBR[t])}
 /* Letters are the ones assigned for these managers, not initials of the nicknames on the page.
    G$ is Gallup, Gainzy is Schoen, Swaggy is Nick, Rippe is R.
-   Contrast, white letter unless noted: G silver #A5ACAF on #000000 is 9.1:1.
-   Rippe #6B5B95 lavender with white is 5.9:1.
-   Gainzy gold #D3BC8D with white is 1.9:1, so the letter is #1A1A1A (9.4:1).
-   Swaggy orange #FB4F14 with white is 3.4:1, so the letter is #1A1A1A (5.2:1). */
+   Rippe matches the NBA crest: lavender #C4B5E8, letter #1A1408.
+   text is the AA color for his name on a light background. */
 var CREST={
  "G$":{letter:"G",fill:"#000000",ink:"#A5ACAF"},
- "Rippe":{letter:"R",fill:"#6B5B95",ink:"#FFFFFF"},
+ "Rippe":{letter:"R",fill:"#C4B5E8",ink:"#1A1408",text:"#6B4FB3"},
  "Gainzy":{letter:"S",fill:"#D3BC8D",ink:"#1A1A1A"},
  "Swaggy":{letter:"T",fill:"#FB4F14",ink:"#1A1A1A"}
 };
+function lightName(name,fallback){var c=CREST[name];return c&&c.text?c.text:fallback}
 var SCORE_URL="https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?season=2026&seasontype=2";
 
 var DIVS=[
@@ -529,22 +532,25 @@ function App(){
   <div className="ticker-track" ref=${tickTrack}>
    ${(reduceMotion?ticker:[].concat(ticker,ticker)).map(function(g,i){
     var awayOwner=getOwner(g.awayName),homeOwner=getOwner(g.homeName);
+    var shared=awayOwner&&awayOwner===homeOwner;
     var label=g.awayName+" at "+g.homeName+(g.showScore?", "+g.awayScore+" to "+g.homeScore:"")+(g.status?", "+g.status:"");
     function side(which){
      var owner=which==="away"?awayOwner:homeOwner;
      var abbr=which==="away"?g.awayAbbr:g.homeAbbr;
      var name=which==="away"?g.awayName:g.homeName;
      var score=which==="away"?g.awayScore:g.homeScore;
-     var crest=owner&&CREST[owner];
-     return html`<span className=${"tick-side"+(owner?" is-owned":"")} style=${crest?{"--crest":crest.fill}:{}}>
+     var crest=owner&&!shared&&CREST[owner];
+     return html`<span className=${"tick-side"+(crest?" is-owned":"")} style=${crest?{"--crest":crest.fill}:{}}>
       <${Logo} abbr=${abbr} name=${name} sz=${20} alt="" />
       ${g.showScore?html`<span className="tick-score">${score}</span>`:null}
-      ${owner?html`<${Crest} name=${owner} sz=${16} />`:null}
+      ${crest?html`<${Crest} name=${owner} sz=${16} />`:null}
      </span>`;
     }
     return html`<span key=${g.id+"-"+i} className=${"ticker-item"+(g.live?" live":"")} role="group" aria-label=${label}>
      <span aria-hidden="true" style=${{display:"inline-flex",alignItems:"center",gap:8}}>
-      ${side("away")}<span className="tick-at">@</span>${side("home")}<span className="tick-status">${g.status}</span>
+      ${side("away")}<span className="tick-at">@</span>${side("home")}
+      ${shared?html`<${Crest} name=${awayOwner} sz=${16} />`:null}
+      <span className="tick-status">${g.status}</span>
      </span>
     </span>`;
    })}
@@ -587,7 +593,7 @@ function App(){
    <div className="prizes" style=${{display:"flex",gap:8,marginBottom:16,flexWrap:"wrap"}}>
     ${[["Reg Season","$150","$50 buy-in · most wins"],["Super Bowl Winner","$75","$25 buy-in · own the champ"],["Leader",ranked[0].name,ranked[0].tw+" wins"]].map(function(x){return html`<div key=${x[0]} style=${{flex:1,minWidth:120,background:"#fff",borderRadius:8,padding:"12px",border:"1px solid #E2E8DF",borderTop:"3px solid "+O}}>
      <div className="lbl" style=${{fontSize:8,color:GY,fontWeight:600,letterSpacing:1,textTransform:"uppercase"}}>${x[0]}</div>
-     <div className=${x[0]==="Leader"?"mgr-line":""} style=${Object.assign({fontSize:20,fontWeight:900,color:N},serif)}>${x[0]==="Leader"?html`<${Crest} name=${x[1]} sz=${22} />`:null}${x[1]}</div>
+     <div className=${x[0]==="Leader"?"mgr-line":""} style=${Object.assign({fontSize:20,fontWeight:900,color:x[0]==="Leader"?lightName(x[1],N):N},serif)}>${x[0]==="Leader"?html`<${Crest} name=${x[1]} sz=${22} />`:null}${x[1]}</div>
      <div className="lbl" style=${{fontSize:9,color:GY}}>${x[2]}</div>
     </div>`})}
    </div>
@@ -612,7 +618,7 @@ function App(){
       <table className="st" style=${{width:"100%"}}><thead><tr style=${{background:LN}}>${["#","MGR","WINS","GB","GP","PACE","PT DIFF","TOP TEAM"].map(function(hh){return html`<th key=${hh} className="lbl" style=${{padding:"8px",fontSize:8,fontWeight:800,color:hh==="WINS"?GR:hh==="PACE"?O:N,letterSpacing:1,textAlign:hh==="MGR"||hh==="TOP TEAM"?"left":"center"}}>${hh}</th>`})}</tr></thead>
       <tbody>${ranked.map(function(m,i){return html`<tr key=${m.name} style=${{background:i===0?LO:i%2===0?"#FAFBF8":"#fff",borderTop:"1px solid #EEF2EB"}}>
        <td style=${Object.assign({padding:"10px 8px",textAlign:"center",fontWeight:800,fontSize:15,color:i===0?O:N},serif)}>${i+1}</td>
-       <td style=${{padding:"10px 8px"}}><div className="mgr-line" style=${{fontWeight:700,fontSize:13,color:N}}><${Crest} name=${m.name} sz=${18} />${m.name}${m.name===CHAMPS.reg?html`<span title="Defending champ" style=${{marginLeft:4}}>🏆</span>`:null}</div>${badges[m.name].length?html`<div style=${{display:"flex",gap:3,flexWrap:"wrap",marginTop:3}}>${badges[m.name].map(function(b){return html`<span className="badge chip" key=${b}>${b}</span>`})}</div>`:null}</td>
+       <td style=${{padding:"10px 8px"}}><div className="mgr-line" style=${{fontWeight:700,fontSize:13,color:lightName(m.name,N),flexWrap:"nowrap"}}><${Crest} name=${m.name} sz=${18} /><span>${m.name}</span>${m.name===CHAMPS.reg?html`<span title="Defending champ" style=${{marginLeft:4}}>🏆</span>`:null}${badges[m.name].length>1?html`<span className="badge chip chip-sum" title=${badges[m.name].join(" · ")}>${badges[m.name].length}</span>`:null}</div>${badges[m.name].length?html`<div className=${"mgr-badges"+(badges[m.name].length>1?" has-many":"")}>${badges[m.name].map(function(b){return html`<span className="badge chip" key=${b}>${b}</span>`})}</div>`:null}</td>
        <td className="wins" style=${Object.assign({padding:"10px 8px",textAlign:"center",fontWeight:900,fontSize:18,color:N},serif)}>${m.tw}</td>
        <td style=${{padding:"10px 8px",textAlign:"center",fontSize:11,color:i===0?GY:RD,fontWeight:700}}>${i===0?"-":topW-m.tw}</td>
        <td className="gp" style=${{padding:"10px 8px",textAlign:"center",fontSize:12,color:N}}>${m.gp}</td>
@@ -625,14 +631,14 @@ function App(){
    </${Cd}>
 
    <div className="two" style=${{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12,marginBottom:16}}>
-    <${Cd}><${Hd} r="W3+">🔥 HOT STREAKS</${Hd}><div style=${{padding:"8px 14px"}}>${hot.length===0?html`<div className="lbl" style=${{fontSize:12,color:GY,padding:6}}>No active 3+ win streaks.</div>`:hot.slice(0,6).map(function(x){return html`<div key=${x.t} style=${{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"6px 0",borderBottom:"1px solid #EEF2EB",fontSize:13,gap:8}}><${Tm} name=${x.t} elim=${isElim(x.t)}></${Tm}><span style=${{display:"flex",gap:6,alignItems:"center"}}><span className="lbl mgr-line" style=${{fontSize:9,color:O,fontWeight:700}}><${Crest} name=${x.m} sz=${14} />${x.m}</span><${Stk} v=${x.v.stk}></${Stk}></span></div>`})}</div></${Cd}>
-    <${Cd}><${Hd} r="L3+">🥶 FROZEN TUNDRA</${Hd}><div style=${{padding:"8px 14px"}}>${cold.length===0?html`<div className="lbl" style=${{fontSize:12,color:GY,padding:6}}>No active 3+ losing streaks.</div>`:cold.slice(0,6).map(function(x){return html`<div key=${x.t} style=${{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"6px 0",borderBottom:"1px solid #EEF2EB",fontSize:13,gap:8}}><${Tm} name=${x.t} elim=${isElim(x.t)}></${Tm}><span style=${{display:"flex",gap:6,alignItems:"center"}}><span className="lbl mgr-line" style=${{fontSize:9,color:O,fontWeight:700}}><${Crest} name=${x.m} sz=${14} />${x.m}</span><${Stk} v=${x.v.stk}></${Stk}></span></div>`})}</div></${Cd}>
+    <${Cd}><${Hd} r="W3+">🔥 HOT STREAKS</${Hd}><div style=${{padding:"8px 14px"}}>${hot.length===0?html`<div className="lbl" style=${{fontSize:12,color:GY,padding:6}}>No active 3+ win streaks.</div>`:hot.slice(0,6).map(function(x){return html`<div key=${x.t} style=${{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"6px 0",borderBottom:"1px solid #EEF2EB",fontSize:13,gap:8}}><${Tm} name=${x.t} elim=${isElim(x.t)}></${Tm}><span style=${{display:"flex",gap:6,alignItems:"center"}}><span className="lbl mgr-line" style=${{fontSize:9,color:lightName(x.m,O),fontWeight:700}}><${Crest} name=${x.m} sz=${14} />${x.m}</span><${Stk} v=${x.v.stk}></${Stk}></span></div>`})}</div></${Cd}>
+    <${Cd}><${Hd} r="L3+">🥶 FROZEN TUNDRA</${Hd}><div style=${{padding:"8px 14px"}}>${cold.length===0?html`<div className="lbl" style=${{fontSize:12,color:GY,padding:6}}>No active 3+ losing streaks.</div>`:cold.slice(0,6).map(function(x){return html`<div key=${x.t} style=${{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"6px 0",borderBottom:"1px solid #EEF2EB",fontSize:13,gap:8}}><${Tm} name=${x.t} elim=${isElim(x.t)}></${Tm}><span style=${{display:"flex",gap:6,alignItems:"center"}}><span className="lbl mgr-line" style=${{fontSize:9,color:lightName(x.m,O),fontWeight:700}}><${Crest} name=${x.m} sz=${14} />${x.m}</span><${Stk} v=${x.v.stk}></${Stk}></span></div>`})}</div></${Cd}>
    </div>
 
    <${Cd} s=${{marginBottom:16}}><${Hd} r="DRAG TO ADJUST">WHAT-IF · PROJECTED FINAL WINS</${Hd}><div style=${{padding:"14px 16px"}}>
     <div className="lbl" style=${{fontSize:12,color:GY,marginBottom:12,lineHeight:1.45}}>Current pace over a full 136-game slate (8 teams × 17). Slide to add or subtract wins and see how the race shakes out.</div>
     ${[].concat(mgrs).sort(function(a,b){return b.proj-a.proj}).map(function(m,i){var mx=Math.max.apply(null,mgrs.map(function(z){return z.proj}))||1;return html`<div key=${m.name} style=${{marginBottom:12}}>
-     <div style=${{display:"flex",justifyContent:"space-between",fontSize:12,marginBottom:4}}><span className="lbl mgr-line" style=${{fontWeight:700,color:N,fontSize:11}}>${i===0?"👑 ":""}<${Crest} name=${m.name} sz=${16} />${m.name}</span><span style=${Object.assign({fontWeight:900,color:i===0?O:N,fontSize:14},serif)}>${m.proj}</span></div>
+     <div style=${{display:"flex",justifyContent:"space-between",fontSize:12,marginBottom:4}}><span className="lbl mgr-line" style=${{fontWeight:700,color:lightName(m.name,N),fontSize:11}}>${i===0?"👑 ":""}<${Crest} name=${m.name} sz=${16} />${m.name}</span><span style=${Object.assign({fontWeight:900,color:i===0?O:N,fontSize:14},serif)}>${m.proj}</span></div>
      <div style=${{background:"#E4ECE1",borderRadius:6,height:6,marginBottom:6}}><div style=${{width:Math.max(0,m.proj/mx*100)+"%",height:"100%",borderRadius:6,background:i===0?O:"#4B6B57"}}></div></div>
      <input type="range" min="-15" max="15" value=${boost[m.name]||0} aria-label=${"Adjust "+m.name} onChange=${function(e){var v=+e.target.value;setBoost(function(b){var n=Object.assign({},b);n[m.name]=v;return n})}} style=${{width:"100%",accentColor:O}} />
     </div>`})}
@@ -642,7 +648,7 @@ function App(){
    <${Cd} s=${{marginBottom:16}}><${Hd} r="$75 POT">SUPER BOWL LXI CHAMPION</${Hd}><div style=${{padding:"12px 16px"}}>
     <div className="lbl" style=${{fontSize:12,color:GY,marginBottom:10,lineHeight:1.45}}>Own the champ - take the pot. Each manager's top contender by wins:</div>
     ${ranked.map(function(m){var top=[].concat(m.teams).sort(function(a,b){return rec(b).w-rec(a).w||gp(a)-gp(b)})[0];var v=rec(top);return html`<div key=${m.name} style=${{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"7px 0",borderBottom:"1px solid #EEF2EB",fontSize:13,gap:8}}>
-     <span className="mgr-line" style=${{fontWeight:700,color:N,minWidth:88}}><${Crest} name=${m.name} sz=${16} />${m.name}</span><${Tm} name=${top} elim=${isElim(top)}></${Tm}><span style=${Object.assign({fontWeight:900,fontSize:14,color:N},serif)}>${v.w} <span className="lbl" style=${{fontSize:9,color:GY,fontFamily:"inherit"}}>WINS</span></span>
+     <span className="mgr-line" style=${{fontWeight:700,color:lightName(m.name,N),minWidth:88}}><${Crest} name=${m.name} sz=${16} />${m.name}</span><${Tm} name=${top} elim=${isElim(top)}></${Tm}><span style=${Object.assign({fontWeight:900,fontSize:14,color:N},serif)}>${v.w} <span className="lbl" style=${{fontSize:9,color:GY,fontFamily:"inherit"}}>WINS</span></span>
     </div>`})}
    </div></${Cd}>
   </div>`:null}
@@ -667,7 +673,7 @@ function App(){
    <${Hd} r="LOCKED · SNAKE · 8 RDS">${SEASON} DRAFT · ${DRAFT_DATE.toUpperCase()}</${Hd}>
    <div className="draft-scroll"><table className="dt" style=${{width:"100%",minWidth:460}}><thead><tr style=${{background:LN}}>
     <th className="lbl" style=${{padding:"8px",fontSize:8,width:34,color:N}}>RD</th>
-    ${order.map(function(m){return html`<th key=${m} className="lbl" style=${{padding:"8px",fontSize:9,fontWeight:800,color:N,textAlign:"left"}}><span className="mgr-line"><${Crest} name=${m} sz=${16} />${m}</span> <span style=${{color:GY,fontWeight:600}}>#${PICK[m]}</span></th>`})}
+    ${order.map(function(m){return html`<th key=${m} className="lbl" style=${{padding:"8px",fontSize:9,fontWeight:800,color:lightName(m,N),textAlign:"left"}}><span className="mgr-line"><${Crest} name=${m} sz=${16} />${m}</span> <span style=${{color:GY,fontWeight:600}}>#${PICK[m]}</span></th>`})}
    </tr></thead><tbody>
     ${rounds.map(function(row,ri){return html`<tr key=${ri} style=${{borderTop:"1px solid #EEF2EB",background:ri%2?"#FAFBF8":"#fff"}}>
      <td style=${{padding:"8px",textAlign:"center",fontWeight:800,fontSize:12,color:O}}>${ri+1}${ri%2===0?"→":"←"}</td>
@@ -679,7 +685,7 @@ function App(){
      <h3>ROUND ${ri+1} ${ri%2===0?"→":"←"}</h3>
      <div className="draft-grid">
       ${row.map(function(c){var v=rec(c.t);return html`<div className="draft-pick" key=${c.m}>
-       <div className="meta"><span className="mgr-line"><${Crest} name=${c.m} sz=${16} />${c.m}</span><span>#${c.pick}</span></div>
+       <div className="meta"><span className="mgr-line" style=${{color:lightName(c.m,"#0E3B22")}}><${Crest} name=${c.m} sz=${16} />${c.m}</span><span>#${c.pick}</span></div>
        <div style=${{display:"flex",justifyContent:"space-between",alignItems:"center",gap:6}}>
         <${Tm} name=${c.t} sz=${16} elim=${isElim(c.t)}></${Tm}>
         <span style=${{fontWeight:800,color:GY,fontSize:12}}>${v.w}W</span>
@@ -697,7 +703,7 @@ function App(){
      <div className="nfl-d"><table style=${{width:"100%"}}><thead><tr style=${{background:LN}}>${["TEAM","MGR","GP","W","L","T","DIFF"].map(function(x){return html`<th key=${x} className="lbl" style=${{padding:"6px",fontSize:8,fontWeight:700,color:N,textAlign:x==="TEAM"||x==="MGR"?"left":"center"}}>${x}</th>`})}</tr></thead>
      <tbody>${srt.map(function(t,i){var v=rec(t),df=v.pf-v.pa;return html`<tr key=${t} style=${{borderTop:i===1?"2px dashed #B9C8B3":"1px solid #EEF2EB",background:i===0?LO:"#fff"}}>
       <td style=${{padding:"6px",fontSize:12}}><${Tm} name=${t} sz=${14} elim=${isElim(t)}></${Tm}></td>
-      <td className="lbl" style=${{padding:"6px",fontSize:9,color:O,fontWeight:700}}><span className="mgr-line"><${Crest} name=${getOwner(t)} sz=${14} />${getOwner(t)}</span></td>
+      <td className="lbl" style=${{padding:"6px",fontSize:9,color:lightName(getOwner(t),O),fontWeight:700}}><span className="mgr-line"><${Crest} name=${getOwner(t)} sz=${14} />${getOwner(t)}</span></td>
       <td style=${{padding:"6px",fontSize:12,textAlign:"center"}}>${gp(t)}</td>
       <td style=${{padding:"6px",fontSize:12,textAlign:"center",fontWeight:800}}>${v.w}</td>
       <td style=${{padding:"6px",fontSize:12,textAlign:"center"}}>${v.l}</td>
@@ -710,7 +716,7 @@ function App(){
        <span style=${{fontWeight:800,fontSize:13}}>${wlt(v)}</span>
       </div>
       <div className="lbl" style=${{display:"flex",justifyContent:"space-between",marginTop:4,fontSize:12,fontWeight:700}}>
-       <span className="mgr-line" style=${{color:O}}><${Crest} name=${getOwner(t)} sz=${14} />${getOwner(t)}</span>
+       <span className="mgr-line" style=${{color:lightName(getOwner(t),O)}}><${Crest} name=${getOwner(t)} sz=${14} />${getOwner(t)}</span>
        <span>GP ${gp(t)}</span>
        <span style=${{color:df>=0?GR:RD}}>${df>0?"+":""}${df}</span>
       </div>
@@ -736,7 +742,7 @@ function App(){
    <${Cd} s=${{marginBottom:16}}><${Hd} r="FINAL · RIPPE SWEPT BOTH POTS">2025 FINAL STANDINGS</${Hd}>
     ${HIST.mgrs.map(function(m,i){return html`<div key=${m.name} style=${{padding:"12px 16px",borderTop:i?"1px solid #EEF2EB":"none",background:i===0?LO:"#fff"}}>
      <div style=${{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:6,gap:8}}>
-      <span className="mgr-line" style=${Object.assign({fontWeight:900,fontSize:15,color:N},serif)}>${i+1}. <${Crest} name=${m.name} sz=${18} />${m.name}</span>
+      <span className="mgr-line" style=${Object.assign({fontWeight:900,fontSize:15,color:lightName(m.name,N)},serif)}>${i+1}. <${Crest} name=${m.name} sz=${18} />${m.name}</span>
       <span style=${Object.assign({fontWeight:900,fontSize:18,color:i===0?O:N},serif)}>${m.tw} <span className="lbl" style=${{fontSize:10,color:GY,fontFamily:"inherit"}}>${i===0?"":"(-"+(HIST.mgrs[0].tw-m.tw)+")"}</span></span>
      </div>
      <div style=${{display:"flex",flexWrap:"wrap",gap:"4px 12px"}}>${m.teams.map(function(t){return html`<span key=${t[0]} className="lbl" style=${{fontSize:10}}><${Tm} name=${t[0]} sz=${12} elim=${false}></${Tm}> <b>${t[1]}</b></span>`})}</div>
@@ -749,7 +755,7 @@ function App(){
    ${[["THE GAME","4 managers draft 8 NFL teams each. Most combined regular season wins across all 8 teams wins the league."],["DRAFT","Snake format, 8 rounds, all 32 NFL teams. Held "+DRAFT_DATE+". Order: Swaggy, G$, Gainzy, Rippe."],["SCORING","Every regular season win counts as 1. Losses and ties count for nothing. Playoff games don't count toward the league."],["TIEBREAKER","If tied on total wins, the manager whose single best team has the most wins takes it."],["REG SEASON POT","$50 buy-in. Most wins at the end of Week 18 takes $150."],["SUPER BOWL SIDE BET","$25 buy-in. Own the champ - take the pot. The manager who drafted the Super Bowl LXI champion takes $75."]].map(function(x){return html`<div key=${x[0]} style=${{marginBottom:12}}><div className="lbl" style=${{fontSize:9,fontWeight:800,color:O,letterSpacing:1}}>${x[0]}</div><div style=${{fontSize:13,color:N,lineHeight:1.5}}>${x[1]}</div></div>`})}
   </div></${Cd}></div>`:null}
  </div>
- <div className="lbl" style=${{textAlign:"center",padding:"10px 12px 14px",fontSize:12,color:GY}}>NFL Team League ${SEASON} · Defending Champ: Rippe · Super Bowl: Rippe (Seahawks)</div>
+ <div className="lbl" style=${{textAlign:"center",padding:"10px 12px 14px",fontSize:12,color:GY}}>NFL Team League ${SEASON} · Defending Champ: <span style=${{color:"#6B4FB3"}}>Rippe</span> · Super Bowl: <span style=${{color:"#6B4FB3"}}>Rippe</span> (Seahawks)</div>
  </div>`;
 }
 ReactDOM.createRoot(document.getElementById("root")).render(html`<${App} />`);
