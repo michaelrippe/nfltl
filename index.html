@@ -8,13 +8,13 @@
 <link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@400;600;700;800;900&family=Playfair+Display:wght@700;800;900&display=swap" rel="stylesheet">
 <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
 <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
-<script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script crossorigin src="https://cdn.jsdelivr.net/npm/htm@3.1.1/dist/htm.umd.js" integrity="sha384-toVdrLSMaw7Y55MowcKqkmFL/Ek6Sky62NOk0b5sDDZBu2wcoPyyQUt9unDVjXhL"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Libre Franklin',sans-serif;background:#F6F7F2}
-button{cursor:pointer;font-family:inherit;border:none}
+body{font-family:'Libre Franklin',sans-serif;background:#F6F7F2;color:#0E3B22}
+button{cursor:pointer;font-family:inherit;border:none;background:none}
 button:active{transform:scale(.97)}
+button:focus-visible,input:focus-visible{outline:2px solid #7C4A21;outline-offset:2px}
 input{font-family:inherit}
 table{border-collapse:collapse}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
@@ -24,19 +24,61 @@ table{border-collapse:collapse}
   repeating-linear-gradient(90deg,#14532D 0 36px,#166534 36px 72px)}
 .laces{height:4px;background:repeating-linear-gradient(90deg,#fff 0 10px,transparent 10px 18px);opacity:.55}
 .field{position:relative;background:repeating-linear-gradient(90deg,#E4ECE1 0 9.9%,#C9D8C4 9.9% 10%);border-radius:10px;height:10px}
+.tabs{display:flex;flex-wrap:wrap;margin-top:10px}
+.tabs button{color:#fffa;padding:7px 16px;font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;border-radius:5px 5px 0 0}
+.tabs button.on{background:#7C4A21;color:#fff}
+.tm{display:inline-flex;align-items:center;gap:5px;min-width:0;flex-wrap:wrap}
+.tm img{flex:none}
+.elim{text-decoration:line-through;text-decoration-color:#DC2626;color:#999}
+.logo-fallback{display:inline-flex;align-items:center;justify-content:center;border-radius:50%;background:#0E3B22;color:#fff;font-weight:800;flex:none;line-height:1}
+.badge{font-size:10px;font-weight:700}
+.stk{padding:2px 6px;border-radius:3px;font-weight:800}
+.chip{color:#7C4A21;background:#F3E5D6;padding:2px 6px;border-radius:3px}
+.share-btn{background:#7C4A21;color:#fff;border-radius:6px;padding:8px 12px;font-size:12px;font-weight:800;letter-spacing:.04em}
+.alert{background:#FEF3C7;border:1px solid #E8B15A;border-radius:8px;padding:12px 14px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.alert strong{display:block;font-size:14px;color:#7C4A21}
+.alert p{font-size:13px;color:#5C3A1A;line-height:1.45;margin-top:4px;max-width:640px}
+.retry-btn{background:#7C4A21;color:#fff;border-radius:6px;padding:8px 14px;font-size:12px;font-weight:800}
+.reset-btn{background:#EEF2EB;color:#0E3B22;border-radius:6px;padding:8px 14px;font-size:12px;font-weight:800}
+.champ{background:linear-gradient(100deg,#7C4A21,#A56B32);color:#fff;border-radius:8px;padding:14px 16px;margin-bottom:14px}
+.champ .eyebrow{font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#F8E7D2}
+.champ .who{font-family:'Playfair Display',serif;font-weight:900;font-size:28px;line-height:1.1;margin:2px 0}
+.champ .sub{font-size:13px;color:#fff}
+.draft-cards,.nfl-m{display:none}
+.draft-round{padding:12px 14px;border-top:1px solid #EEF2EB}
+.draft-round h3{font-size:12px;font-weight:800;letter-spacing:.08em;color:#7C4A21;margin-bottom:8px}
+.draft-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.draft-pick{background:#F7F8F4;border:1px solid #E2E8DF;border-radius:8px;padding:8px;min-width:0}
+.draft-pick .meta{display:flex;justify-content:space-between;gap:6px;font-size:12px;font-weight:800;color:#0E3B22;margin-bottom:4px}
+.nfl-row{padding:8px 12px}
+.pill{display:inline-block;font-size:10px;font-weight:800;color:#fff;padding:3px 10px;border-radius:4px;letter-spacing:1px}
+.status-line{font-size:13px;font-weight:700;color:#fff}
+.status-sub{font-size:12px;color:#fff;font-weight:600;opacity:.92}
 @media(max-width:640px){
 .hdr{padding:14px 12px 10px!important}
 .hdr-row{flex-direction:column!important;align-items:flex-start!important;gap:6px}
 .hdr-row>div:last-child{text-align:left!important}
-.hdr h1{font-size:20px!important}
-.tabs{overflow-x:auto}
-.tabs button{padding:7px 10px!important;font-size:8px!important;white-space:nowrap}
+.hdr h1{font-size:22px!important}
+.tabs{gap:6px;padding-bottom:8px;overflow:visible}
+.tabs button{flex:1 0 auto;padding:10px 12px!important;font-size:12px!important;min-height:44px;letter-spacing:.04em;border-radius:6px;white-space:nowrap}
 .prizes{flex-direction:column}
-.st td:nth-child(5),.st th:nth-child(5),.st td:nth-child(7),.st th:nth-child(7){display:none}
+.st{table-layout:fixed;width:100%}
+.st td:nth-child(6),.st th:nth-child(6),.st td:nth-child(7),.st th:nth-child(7){display:none}
+.st th:nth-child(1),.st td:nth-child(1){width:28px}
+.st th:nth-child(3),.st td:nth-child(3){width:54px}
+.st th:nth-child(4),.st td:nth-child(4){width:36px}
+.st th:nth-child(5),.st td:nth-child(5){width:40px}
+.st th,.st td{padding:8px 4px!important}
 .rosters,.divs,.two{grid-template-columns:1fr!important}
-.dt{font-size:9px!important}
-.dt th,.dt td{padding:5px 4px!important}
 .cnt{padding:12px 10px!important}
+.lbl{font-size:12px!important;line-height:1.35}
+.badge{font-size:10px!important}
+.share-btn,.retry-btn{min-height:44px;min-width:44px;font-size:12px!important;padding:10px 14px!important}
+.reset-btn{min-height:44px;font-size:12px!important;padding:10px 14px!important}
+.draft-scroll,.nfl-d{display:none!important}
+.draft-cards,.nfl-m{display:block!important}
+.draft-round h3,.draft-pick .meta{font-size:12px!important}
+.pill{font-size:12px!important}
 }
 </style>
 </head>
@@ -58,7 +100,7 @@ var ROSTERS=[
 var CHAMPS={reg:"Rippe",sb:"Rippe",sbTeam:"Seahawks"};
 var DRAFT_DATE="September 1, 2026";
 
-/* ═══ BASELINE STANDINGS — through Week 5, snapshot Oct 13, 2026. Live API overlays this; never blanked. ═══ */
+/* Week 5 snapshot, Oct 13, 2026. Used only until a complete 2026 payload has been saved. */
 /* [W, L, T, PF, PA, STREAK] */
 var BASE={
 "49ers":[5,0,0,154,93,"W5"],"Vikings":[5,0,0,109,64,"W5"],"Chiefs":[4,0,0,118,77,"W4"],"Ravens":[4,1,0,146,119,"W3"],
@@ -71,6 +113,11 @@ var BASE={
 "Cardinals":[1,4,0,108,162,"L4"],"Dolphins":[0,5,0,70,132,"L5"],"Chargers":[0,5,0,84,129,"L5"],"Titans":[0,5,0,58,109,"L5"]
 };
 var BASE_DATE="Oct 13, 2026";
+var ESPN_URL="https://site.api.espn.com/apis/v2/sports/football/nfl/standings?season=2026&seasontype=2";
+var CACHE_KEY="nfltl-2026-standings-v1";
+/* ESPN's 2026 regular-season window ends 2027-01-13T07:59Z. Week 18 is Jan 10, 2027. */
+var REG_SEASON_END=Date.parse("2027-01-13T07:59:00Z");
+var REFRESH_MS=300000;
 
 var ABBR={"Cardinals":"ARI","Falcons":"ATL","Ravens":"BAL","Bills":"BUF","Panthers":"CAR","Bears":"CHI","Bengals":"CIN","Browns":"CLE","Cowboys":"DAL","Broncos":"DEN","Lions":"DET","Packers":"GB","Texans":"HOU","Colts":"IND","Jaguars":"JAX","Chiefs":"KC","Raiders":"LV","Chargers":"LAC","Rams":"LAR","Dolphins":"MIA","Vikings":"MIN","Patriots":"NE","Saints":"NO","Giants":"NYG","Jets":"NYJ","Eagles":"PHI","Steelers":"PIT","49ers":"SF","Seahawks":"SEA","Buccaneers":"TB","Titans":"TEN","Commanders":"WSH"};
 var BY_ABBR={};Object.keys(ABBR).forEach(function(k){BY_ABBR[ABBR[k]]=k});BY_ABBR.WAS="Commanders";
@@ -97,9 +144,18 @@ var HIST={season:"2025",mgrs:[
 
 /* Turf green + pigskin brown */
 var N="#0E3B22",O="#7C4A21",TAN="#E2B07A",LO="#FBF3EA",LN="#EEF2EB",GR="#15803D",RD="#DC2626",GY="#9CA3AF",GL="#F59E0B";
+var serif={fontFamily:"'Playfair Display',serif"};
 
 function baseRecords(){var o={};Object.keys(BASE).forEach(function(t){var b=BASE[t];o[t]={w:b[0],l:b[1],t:b[2],pf:b[3],pa:b[4],stk:b[5],clinch:""}});return o}
 function collect(node,out){if(!node)return out;if(node.standings&&node.standings.entries)node.standings.entries.forEach(function(e){out.push(e)});if(node.children)node.children.forEach(function(c){collect(c,out)});return out}
+/*
+  ESPN clincher.displayValue, confirmed on the 2025 final regular-season feed:
+    e  Eliminated from Playoff Contention   (strikethrough)
+    y  Clinched Wild Card
+    z  Clinched Division
+    *  Clinched Division and Bye
+  The 2026 Week 11 feed omits the clincher stat until a team is eliminated or clinches.
+*/
 function parseApi(j){
  var entries=collect(j,[]);if(entries.length<32)return null;
  var o={};
@@ -109,190 +165,460 @@ function parseApi(j){
   var st={};(e.stats||[]).forEach(function(s){st[s.name]=s});
   function n(k){return st[k]?(parseInt(st[k].value,10)||0):0}
   var stk=st.streak?String(st.streak.displayValue||""):"";
-  o[t]={w:n("wins"),l:n("losses"),t:n("ties"),pf:n("pointsFor"),pa:n("pointsAgainst"),stk:/^[WL]\d+$/.test(stk)?stk:"",clinch:st.clincher?String(st.clincher.displayValue||""):""};
+  var clinch="";
+  if(st.clincher){
+   var raw=String(st.clincher.displayValue||"").trim();
+   var desc=String(st.clincher.description||"");
+   clinch=(raw.toLowerCase()==="e"||/eliminated/i.test(desc))?"e":raw;
+  }
+  o[t]={w:n("wins"),l:n("losses"),t:n("ties"),pf:n("pointsFor"),pa:n("pointsAgainst"),stk:/^[WL]\d+$/.test(stk)?stk:"",clinch:clinch};
  });
  return Object.keys(o).length>=32?o:null;
 }
-</script>
-<script type="text/babel">
-function App(){
-var h=React.useState,u=React.useEffect,r=React.useRef;
-var TABS=[["standings","Standings"],["rosters","Rosters"],["draft","Draft"],["nfl","NFL Standings"],["history","2025"],["rules","Rules"]];
-var[tab,setTab]=h(function(){var x=location.hash.slice(1);return TABS.map(function(t){return t[0]}).indexOf(x)>=0?x:"standings"});
-function go(t){setTab(t);location.hash=t}
-var[rc,setRc]=h(baseRecords);
-var[src,setSrc]=h({live:false,at:BASE_DATE});
-var[boost,setBoost]=h({});
-var sRef=r(null);
+function slateGames(o){var n=0;Object.keys(o).forEach(function(t){var v=o[t];n+=(v.w||0)+(v.l||0)+(v.t||0)});return n}
+function maxGpOf(o){var m=0;Object.keys(o).forEach(function(t){var v=o[t];var g=(v.w||0)+(v.l||0)+(v.t||0);if(g>m)m=g});return m}
+function dataIsFinal(o,now){return maxGpOf(o)>=GAMES||(now==null?Date.now():now)>REG_SEASON_END}
+function wlt(v){return v.w+"-"+v.l+(v.t?"-"+v.t:"")}
+function stamp(v){
+ if(v==null||v==="")return "";
+ var d=new Date(v);
+ if(isNaN(d.getTime()))return String(v);
+ return d.toLocaleString("en-US",{month:"short",day:"numeric",year:"numeric",hour:"numeric",minute:"2-digit"});
+}
+function normalize(records){
+ if(!records)return null;
+ var o={};
+ Object.keys(records).forEach(function(t){
+  if(!ABBR[t])return;
+  var v=records[t];
+  if(!v||[v.w,v.l,v.t,v.pf,v.pa].some(function(n){return typeof n!=="number"||!isFinite(n)}))return;
+  o[t]={w:v.w,l:v.l,t:v.t,pf:v.pf,pa:v.pa,stk:String(v.stk||""),clinch:String(v.clinch||"")};
+ });
+ return Object.keys(o).length>=32?o:null;
+}
+function readCache(){
+ try{
+  var raw=localStorage.getItem(CACHE_KEY);if(!raw)return null;
+  var c=JSON.parse(raw);
+  if(!c||c.season!=="2026"||c.seasontype!==2||!c.at)return null;
+  var records=normalize(c.records);if(!records)return null;
+  return {at:String(c.at),records:records};
+ }catch(e){return null}
+}
+function writeCache(records,at){
+ try{localStorage.setItem(CACHE_KEY,JSON.stringify({season:"2026",seasontype:2,at:at,records:records}))}catch(e){}
+}
+var h2cPromise=null;
+function loadHtml2Canvas(){
+ if(window.html2canvas)return Promise.resolve(window.html2canvas);
+ if(h2cPromise)return h2cPromise;
+ h2cPromise=new Promise(function(resolve,reject){
+  var s=document.createElement("script");
+  s.src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js";
+  s.async=true;
+  s.onload=function(){if(window.html2canvas)resolve(window.html2canvas);else reject(new Error("html2canvas missing"))};
+  s.onerror=function(){h2cPromise=null;reject(new Error("share tool failed"))};
+  document.head.appendChild(s);
+ });
+ return h2cPromise;
+}
+function champLabel(list){
+ if(list.length===1)return list[0].name;
+ if(list.length===2)return list[0].name+" and "+list[1].name;
+ return list.slice(0,-1).map(function(m){return m.name}).join(", ")+" and "+list[list.length-1].name;
+}
 
-/* Live overlay — only replaces data when the response is complete AND not behind the baseline */
-u(function(){
- var URL="https://site.api.espn.com/apis/v2/sports/football/nfl/standings";
- function sum(o){var s=0;Object.keys(o).forEach(function(k){s+=o[k].w});return s}
- function load(){
-  fetch(URL).then(function(x){return x.json()}).catch(function(){return fetch("https://corsproxy.io/?url="+encodeURIComponent(URL)).then(function(x){return x.json()})})
-  .then(function(j){var p=parseApi(j);if(p&&sum(p)>=sum(baseRecords())){setRc(p);setSrc({live:true,at:new Date().toLocaleTimeString([],{hour:"numeric",minute:"2-digit"})})}})
-  .catch(function(){});
- }
- load();var id=setInterval(load,300000);return function(){clearInterval(id)};
-},[]);
-
-function rec(t){return rc[t]||{w:0,l:0,t:0,pf:0,pa:0,stk:"",clinch:""}}
-function gp(t){var v=rec(t);return v.w+v.l+v.t}
-function isElim(t){return rec(t).clinch==="e"}
-
-var mgrs=MNAMES.map(function(n,i){
- var t=ROSTERS[i],tw=0,g=0,bt="",bw=-1,diff=0;
- t.forEach(function(x){var v=rec(x);tw+=v.w;g+=gp(x);diff+=v.pf-v.pa;if(v.w>bw){bw=v.w;bt=x}});
- var pace=g>0?Math.round(tw/g*GAMES*8):0;
- var extra=boost[n]||0;
- return{name:n,teams:t,tw:tw,gp:g,bt:bt,bw:bw,diff:diff,pace:pace,proj:pace+extra}
-});
-var ranked=[].concat(mgrs).sort(function(a,b){return b.tw-a.tw||b.bw-a.bw});
-var topW=ranked[0].tw;
-var totalGP=mgrs.reduce(function(a,m){return a+m.gp},0);
-var progress=Math.min(100,totalGP/(GAMES*32)*100);
-var week=Math.max.apply(null,Object.keys(ABBR).map(function(t){return gp(t)}));
-
-/* Badges */
-var badges={};ranked.forEach(function(m){badges[m.name]=[]});
-var all=[];mgrs.forEach(function(m){m.teams.forEach(function(t){all.push({t:t,m:m.name,v:rec(t)})})});
-var hot=all.filter(function(x){return /^W([3-9]|\d\d)/.test(x.v.stk)}).sort(function(a,b){return parseInt(b.v.stk.slice(1))-parseInt(a.v.stk.slice(1))});
-var cold=all.filter(function(x){return /^L([3-9]|\d\d)/.test(x.v.stk)}).sort(function(a,b){return parseInt(b.v.stk.slice(1))-parseInt(a.v.stk.slice(1))});
-var best=[].concat(all).sort(function(a,b){return b.v.w-a.v.w})[0];
-if(best&&best.v.w>0)badges[best.m].push("Sharpshooter · "+best.t+" "+best.v.w+"W");
-ranked.forEach(function(m){var hc=hot.filter(function(x){return x.m===m.name}).length;if(hc>=2)badges[m.name].push("On Fire · "+hc+" hot teams")});
-var mostDiff=[].concat(mgrs).sort(function(a,b){return b.diff-a.diff})[0];if(mostDiff.diff>0)badges[mostDiff.name].push("Point Machine · +"+mostDiff.diff);
-
-function getOwner(t){var o="";mgrs.forEach(function(m){if(m.teams.indexOf(t)>=0)o=m.name});return o}
-
-function share(){if(!sRef.current)return;html2canvas(sRef.current,{backgroundColor:"#F6F7F2",scale:2,useCORS:true}).then(function(c){c.toBlob(function(b){var f=new File([b],"nfl-tl-2026.png",{type:"image/png"});if(navigator.share&&navigator.canShare&&navigator.canShare({files:[f]}))navigator.share({files:[f]});else{var a=document.createElement("a");a.href=URL.createObjectURL(b);a.download=f.name;a.click()}},"image/png")})}
-
+var html=htm.bind(React.createElement);
 function Tm(p){
- var[err,setErr]=h(false);var sz=p.sz||16;var el=isElim(p.name);
- return <span style={{display:"inline-flex",alignItems:"center",gap:5}}>
- {!err&&logo(p.name)?<img src={logo(p.name)} alt="" crossOrigin="anonymous" style={{width:sz,height:sz,objectFit:"contain",opacity:el?0.4:1}} onError={function(){setErr(true)}}/>:<span style={{display:"inline-flex",alignItems:"center",justifyContent:"center",width:sz,height:sz,borderRadius:"50%",background:N,color:"#fff",fontSize:6,fontWeight:800}}>{ABBR[p.name]||"?"}</span>}
- <span style={el?{textDecoration:"line-through",textDecorationColor:RD,color:"#999"}:{}}>{p.name}</span>
- </span>
+ var pair=React.useState(false);var err=pair[0],setErr=pair[1];
+ var sz=p.sz||16;var name=p.name;var el=!!p.elim;var src=logo(name);
+ return html`<span className="tm">
+  ${(!err&&src)?html`<img src=${src} alt="" crossOrigin="anonymous" style=${{width:sz,height:sz,objectFit:"contain",opacity:el?0.4:1}} onError=${function(){setErr(true)}} />`:html`<span className="logo-fallback" style=${{width:sz,height:sz,fontSize:Math.max(10,Math.round(sz*0.38))}}>${ABBR[name]||"?"}</span>`}
+  <span className=${el?"elim":""} title=${el?"Eliminated from playoff contention":null}>${name}</span>
+ </span>`;
 }
-function Hd(p){return <div style={{background:N,padding:"10px 16px",display:"flex",justifyContent:"space-between",alignItems:"center",gap:6,flexWrap:"wrap"}}><span style={{color:"#fff",fontSize:12,fontWeight:700}}>{p.children}</span>{p.r&&<span style={{color:TAN,fontSize:10,fontWeight:700}}>{p.r}</span>}</div>}
-function Cd(p){return <div style={Object.assign({background:"#fff",borderRadius:8,overflow:"hidden",border:"1px solid #E2E8DF"},p.s||{})}>{p.children}</div>}
-function Stk(p){if(!p.v)return null;var w=p.v.charAt(0)==="W";return <span style={{fontSize:8,fontWeight:800,color:w?GR:RD,background:w?"#DCFCE7":"#FEE2E2",padding:"1px 5px",borderRadius:3}}>{p.v}</span>}
-function Rec(v){return v.w+"-"+v.l+(v.t?"-"+v.t:"")}
-var serif={fontFamily:"'Playfair Display',serif"};
-
-/* Snake draft board */
-var order=[].concat(MNAMES).sort(function(a,b){return PICK[a]-PICK[b]});
-var rounds=[];for(var rd=0;rd<8;rd++){var row=[];order.forEach(function(m,ci){var pickInRd=rd%2===0?ci+1:4-ci;row.push({m:m,t:ROSTERS[MNAMES.indexOf(m)][rd],pick:rd*4+pickInRd})});rounds.push(row)}
-
-return (
-<div>
-<div className="hdr turf" style={{padding:"14px 20px 0"}}>
-<div className="hdr-row" style={{display:"flex",justifyContent:"space-between",alignItems:"flex-end"}}>
-<div>
-<div style={{color:TAN,fontSize:9,fontWeight:700,letterSpacing:3}}>THE OFFICIAL</div>
-<h1 style={Object.assign({color:"#fff",fontSize:28,fontWeight:900,lineHeight:1.1},serif)}>NFL Team League <span style={{color:TAN}}>{SEASON}</span></h1>
-</div>
-<div style={{textAlign:"right"}}>
-<div style={{color:TAN,fontSize:10,fontWeight:700}}>DEFENDING CHAMP: {CHAMPS.reg.toUpperCase()}</div>
-<div style={{fontSize:9,color:"#fff9",marginTop:2}}>Super Bowl Bet Holder: {CHAMPS.sb} · {CHAMPS.sbTeam}</div>
-</div>
-</div>
-<div className="tabs" style={{display:"flex",marginTop:10}}>
-{TABS.map(function(t){return <button key={t[0]} onClick={function(){go(t[0])}} style={{background:tab===t[0]?O:"transparent",color:tab===t[0]?"#fff":"#fffa",padding:"7px 16px",fontSize:9,fontWeight:700,letterSpacing:1.5,textTransform:"uppercase",borderRadius:"5px 5px 0 0"}}>{t[1]}</button>})}
-</div>
-</div>
-<div style={{background:O,padding:"0 20px"}}><div className="laces"/></div>
-
-<div className="cnt" style={{maxWidth:1060,margin:"0 auto",padding:"14px"}}>
-
-<div style={{background:"linear-gradient(90deg,"+N+",#1F5135)",borderRadius:8,padding:"10px 16px",marginBottom:14,display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:8}}>
-<div style={{display:"flex",alignItems:"center",gap:8}}>
-<span style={{fontSize:10,fontWeight:800,color:"#fff",background:src.live?GR:GL,padding:"3px 10px",borderRadius:4,letterSpacing:1}}>{src.live?"LIVE":"SNAPSHOT"}</span>
-<span style={{fontSize:11,fontWeight:700,color:"#fff"}}>{week>=GAMES?"REGULAR SEASON COMPLETE":"REGULAR SEASON · THROUGH WEEK "+week}</span>
-</div>
-<div style={{display:"flex",alignItems:"center",gap:8}}>
-<span style={{fontSize:9,color:"#fffa",fontWeight:600}}>{src.live?"Updated "+src.at+" · refreshes every 5 min":"Standings as of "+src.at}</span>
-{src.live&&<span style={{display:"inline-block",width:8,height:8,borderRadius:"50%",background:"#4ADE80",animation:"pulse 2s infinite"}}/>}
-</div>
-</div>
-
-{tab==="standings"&&<div style={{animation:"fadeIn .25s"}}>
-
-<div className="prizes" style={{display:"flex",gap:8,marginBottom:16,flexWrap:"wrap"}}>
-{[["Reg Season","$150","$50 buy-in · most wins"],["Super Bowl Winner","$75","$25 buy-in · own the champ"],["Leader",ranked[0].name,ranked[0].tw+" wins"]].map(function(x){return <div key={x[0]} style={{flex:1,minWidth:120,background:"#fff",borderRadius:8,padding:"12px",border:"1px solid #E2E8DF",borderTop:"3px solid "+O}}><div style={{fontSize:8,color:GY,fontWeight:600,letterSpacing:1,textTransform:"uppercase"}}>{x[0]}</div><div style={Object.assign({fontSize:20,fontWeight:900,color:N},serif)}>{x[1]}</div><div style={{fontSize:9,color:GY}}>{x[2]}</div></div>})}
-</div>
-
-<Cd s={{marginBottom:16}}><div style={{padding:"12px 16px"}}><div style={{display:"flex",justifyContent:"space-between",marginBottom:8}}><span style={{fontSize:9,fontWeight:700,color:N,letterSpacing:1}}>SEASON PROGRESS</span><span style={{fontSize:9,fontWeight:700,color:O}}>{progress.toFixed(1)}% · {Math.round(totalGP/32*10)/10} avg GP</span></div>
-<div className="field"><div style={{background:"linear-gradient(90deg,#166534,"+GR+")",width:progress+"%",height:"100%",borderRadius:10}}/><span style={{position:"absolute",top:-6,left:progress+"%",transform:"translateX(-50%)",fontSize:16,lineHeight:1}}>🏈</span></div>
-<div style={{display:"flex",justifyContent:"space-between",marginTop:6,fontSize:8,color:GY,fontWeight:700}}><span>KICKOFF</span><span>WEEK 9</span><span>WEEK 18</span></div>
-</div></Cd>
-
-<Cd s={{marginBottom:16}}>
-<div ref={sRef}>
-<div style={{background:N,padding:"10px 16px",display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:6}}><span style={{color:"#fff",fontSize:12,fontWeight:700}}>LEAGUE STANDINGS · {SEASON}</span><button onClick={share} style={{background:O,color:"#fff",borderRadius:4,padding:"3px 8px",fontSize:8,fontWeight:700}}>SHARE</button></div>
-<div style={{overflowX:"auto"}}>
-<table className="st" style={{width:"100%"}}><thead><tr style={{background:LN}}>{["#","MGR","WINS","GB","GP","PACE","PT DIFF","TOP TEAM"].map(function(hh){return <th key={hh} style={{padding:"8px",fontSize:8,fontWeight:800,color:hh==="WINS"?GR:hh==="PACE"?O:N,letterSpacing:1,textAlign:hh==="MGR"||hh==="TOP TEAM"?"left":"center"}}>{hh}</th>})}</tr></thead>
-<tbody>{ranked.map(function(m,i){return <tr key={m.name} style={{background:i===0?LO:i%2===0?"#FAFBF8":"#fff",borderTop:"1px solid #EEF2EB"}}>
-<td style={Object.assign({padding:"10px 8px",textAlign:"center",fontWeight:800,fontSize:15,color:i===0?O:N},serif)}>{i+1}</td>
-<td style={{padding:"10px 8px"}}><div style={{fontWeight:700,fontSize:13,color:N}}>{m.name}{m.name===CHAMPS.reg&&<span title="Defending champ" style={{marginLeft:4}}>🏆</span>}</div>{badges[m.name].length>0&&<div style={{display:"flex",gap:3,flexWrap:"wrap",marginTop:3}}>{badges[m.name].map(function(b){return <span key={b} style={{fontSize:7,fontWeight:700,color:O,background:"#F3E5D6",padding:"1px 5px",borderRadius:3}}>{b}</span>})}</div>}</td>
-<td style={Object.assign({padding:"10px 8px",textAlign:"center",fontWeight:900,fontSize:18,color:N},serif)}>{m.tw}</td>
-<td style={{padding:"10px 8px",textAlign:"center",fontSize:11,color:i===0?GY:RD,fontWeight:700}}>{i===0?"-":topW-m.tw}</td>
-<td style={{padding:"10px 8px",textAlign:"center",fontSize:11,color:N}}>{m.gp}</td>
-<td style={{padding:"10px 8px",textAlign:"center",fontSize:12,fontWeight:800,color:O}}>{m.pace}</td>
-<td style={{padding:"10px 8px",textAlign:"center",fontSize:11,fontWeight:700,color:m.diff>=0?GR:RD}}>{m.diff>0?"+":""}{m.diff}</td>
-<td style={{padding:"10px 8px",fontSize:11}}><Tm name={m.bt} sz={14}/> <span style={{color:GY}}>{m.bw}W</span></td>
-</tr>})}</tbody></table></div>
-</div></Cd>
-
-<div className="two" style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12,marginBottom:16}}>
-<Cd><Hd r="W3+">🔥 HOT STREAKS</Hd><div style={{padding:"8px 14px"}}>{hot.length===0?<div style={{fontSize:10,color:GY,padding:6}}>No active 3+ win streaks.</div>:hot.slice(0,6).map(function(x){return <div key={x.t} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"6px 0",borderBottom:"1px solid #EEF2EB",fontSize:11}}><Tm name={x.t}/><span style={{display:"flex",gap:6,alignItems:"center"}}><span style={{fontSize:9,color:O,fontWeight:700}}>{x.m}</span><Stk v={x.v.stk}/></span></div>})}</div></Cd>
-<Cd><Hd r="L3+">🥶 FROZEN TUNDRA</Hd><div style={{padding:"8px 14px"}}>{cold.length===0?<div style={{fontSize:10,color:GY,padding:6}}>No active 3+ losing streaks.</div>:cold.slice(0,6).map(function(x){return <div key={x.t} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"6px 0",borderBottom:"1px solid #EEF2EB",fontSize:11}}><Tm name={x.t}/><span style={{display:"flex",gap:6,alignItems:"center"}}><span style={{fontSize:9,color:O,fontWeight:700}}>{x.m}</span><Stk v={x.v.stk}/></span></div>})}</div></Cd>
-</div>
-
-<Cd s={{marginBottom:16}}><Hd r="DRAG TO ADJUST">WHAT-IF · PROJECTED FINAL WINS</Hd><div style={{padding:"14px 16px"}}>
-<div style={{fontSize:10,color:GY,marginBottom:12}}>Current pace over a full 136-game slate (8 teams × 17). Slide to add or subtract wins and see how the race shakes out.</div>
-{[].concat(mgrs).sort(function(a,b){return b.proj-a.proj}).map(function(m,i){var mx=Math.max.apply(null,mgrs.map(function(z){return z.proj}))||1;return <div key={m.name} style={{marginBottom:12}}>
-<div style={{display:"flex",justifyContent:"space-between",fontSize:11,marginBottom:4}}><span style={{fontWeight:700,color:N}}>{i===0?"👑 ":""}{m.name}</span><span style={Object.assign({fontWeight:900,color:i===0?O:N,fontSize:14},serif)}>{m.proj}</span></div>
-<div style={{background:"#E4ECE1",borderRadius:6,height:6,marginBottom:6}}><div style={{width:Math.max(0,m.proj/mx*100)+"%",height:"100%",borderRadius:6,background:i===0?O:"#4B6B57"}}/></div>
-<input type="range" min="-15" max="15" value={boost[m.name]||0} onChange={function(e){var v=+e.target.value;setBoost(function(b){var n=Object.assign({},b);n[m.name]=v;return n})}} style={{width:"100%",accentColor:O}}/>
-</div>})}
-<button onClick={function(){setBoost({})}} style={{background:LN,color:N,borderRadius:4,padding:"5px 10px",fontSize:9,fontWeight:700}}>RESET</button>
-</div></Cd>
-
-<Cd s={{marginBottom:16}}><Hd r="$75 POT">SUPER BOWL LXI CHAMPION</Hd><div style={{padding:"12px 16px"}}><div style={{fontSize:10,color:GY,marginBottom:10}}>Own the champ - take the pot. Each manager's top contender by wins:</div>
-{ranked.map(function(m){var top=[].concat(m.teams).sort(function(a,b){return rec(b).w-rec(a).w||gp(a)-gp(b)})[0];var v=rec(top);return <div key={m.name} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"7px 0",borderBottom:"1px solid #EEF2EB",fontSize:11}}><span style={{fontWeight:700,color:N,width:70}}>{m.name}</span><Tm name={top}/><span style={Object.assign({fontWeight:900,fontSize:14,color:N},serif)}>{v.w} <span style={{fontSize:9,color:GY,fontFamily:"inherit"}}>WINS</span></span></div>})}
-</div></Cd>
-</div>}
-
-{tab==="rosters"&&<div className="rosters" style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(250px,1fr))",gap:12,animation:"fadeIn .25s"}}>{ranked.map(function(m,mi){var srt=[].concat(m.teams).sort(function(a,b){return rec(b).w-rec(a).w});return <Cd key={m.name}><div style={{background:mi===0?O:N,padding:"10px 14px",display:"flex",justifyContent:"space-between",alignItems:"center"}}><span style={{color:"#fff",fontWeight:700,fontSize:13}}>{m.name} <span style={{fontSize:9,opacity:.7}}>· Pick {PICK[m.name]}</span></span><span style={Object.assign({color:"#fff",fontWeight:900,fontSize:18},serif)}>{m.tw}</span></div>
-<table style={{width:"100%"}}><thead><tr style={{background:LN}}>{["TEAM","WINS","W-L-T","STK"].map(function(x){return <th key={x} style={{padding:"6px 8px",fontSize:8,fontWeight:700,color:N,textAlign:x==="TEAM"?"left":"center"}}>{x}</th>})}</tr></thead>
-<tbody>{srt.map(function(t){var v=rec(t);return <tr key={t} style={{borderTop:"1px solid #EEF2EB"}}><td style={{padding:"7px 8px",fontSize:11}}><Tm name={t}/></td><td style={Object.assign({padding:"7px 8px",fontSize:14,textAlign:"center",fontWeight:900,color:N},serif)}>{v.w}</td><td style={{padding:"7px 8px",fontSize:10,textAlign:"center",color:GY}}>{v.w}-{v.l}-{v.t}</td><td style={{padding:"7px 8px",textAlign:"center"}}><Stk v={v.stk}/></td></tr>})}</tbody></table></Cd>})}</div>}
-
-{tab==="draft"&&<div style={{animation:"fadeIn .25s"}}><Cd><Hd r="LOCKED · SNAKE · 8 RDS">{SEASON} DRAFT · {DRAFT_DATE.toUpperCase()}</Hd><div style={{overflowX:"auto"}}><table className="dt" style={{width:"100%",minWidth:460}}><thead><tr style={{background:LN}}><th style={{padding:"8px",fontSize:8,width:34,color:N}}>RD</th>{order.map(function(m){return <th key={m} style={{padding:"8px",fontSize:9,fontWeight:800,color:N,textAlign:"left"}}>{m} <span style={{color:GY,fontWeight:600}}>#{PICK[m]}</span></th>})}</tr></thead>
-<tbody>{rounds.map(function(row,ri){return <tr key={ri} style={{borderTop:"1px solid #EEF2EB",background:ri%2?"#FAFBF8":"#fff"}}><td style={{padding:"8px",textAlign:"center",fontWeight:800,fontSize:11,color:O}}>{ri+1}{ri%2===0?"→":"←"}</td>{row.map(function(c){var v=rec(c.t);return <td key={c.m} style={{padding:"8px",fontSize:11}}><div style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:4}}><span><span style={{fontSize:8,color:GY,marginRight:4}}>{c.pick}</span><Tm name={c.t} sz={14}/></span><span style={{fontSize:9,color:GY,fontWeight:700}}>{v.w}W</span></div></td>})}</tr>})}</tbody></table></div></Cd></div>}
-
-{tab==="nfl"&&<div style={{animation:"fadeIn .25s"}}><div className="divs" style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}}>{DIVS.map(function(d){var srt=[].concat(d.teams).sort(function(a,b){var A=rec(a),B=rec(b);return B.w-A.w||gp(a)-gp(b)});return <Cd key={d.name}><Hd r={d.conf}>{d.name.toUpperCase()}</Hd><table style={{width:"100%"}}><thead><tr style={{background:LN}}>{["TEAM","MGR","GP","W","L","T","DIFF"].map(function(x){return <th key={x} style={{padding:"6px",fontSize:8,fontWeight:700,color:N,textAlign:x==="TEAM"||x==="MGR"?"left":"center"}}>{x}</th>})}</tr></thead><tbody>{srt.map(function(t,i){var v=rec(t),df=v.pf-v.pa;return <tr key={t} style={{borderTop:i===1?"2px dashed #B9C8B3":"1px solid #EEF2EB",background:i===0?LO:"#fff"}}><td style={{padding:"6px",fontSize:11}}><Tm name={t} sz={14}/></td><td style={{padding:"6px",fontSize:9,color:O,fontWeight:700}}>{getOwner(t)}</td><td style={{padding:"6px",fontSize:10,textAlign:"center"}}>{gp(t)}</td><td style={{padding:"6px",fontSize:10,textAlign:"center",fontWeight:800}}>{v.w}</td><td style={{padding:"6px",fontSize:10,textAlign:"center"}}>{v.l}</td><td style={{padding:"6px",fontSize:10,textAlign:"center"}}>{v.t}</td><td style={{padding:"6px",fontSize:10,textAlign:"center",color:df>=0?GR:RD}}>{df>0?"+":""}{df}</td></tr>})}</tbody></table></Cd>})}</div><div style={{fontSize:9,color:GY,marginTop:8}}>Sorted by wins. Shaded row above the dashed line = division leader.</div></div>}
-
-{tab==="history"&&<div style={{animation:"fadeIn .25s"}}>
-<div className="prizes" style={{display:"flex",gap:8,marginBottom:16,flexWrap:"wrap"}}>
-<div style={{flex:1,minWidth:160,background:LO,borderRadius:8,padding:"14px",border:"1px solid #E9D3BC"}}><div style={{fontSize:8,color:O,fontWeight:700,letterSpacing:1}}>2025 REGULAR SEASON CHAMPION</div><div style={Object.assign({fontSize:24,fontWeight:900,color:N},serif)}>🏆 Rippe</div><div style={{fontSize:10,color:GY}}>83 wins · won by 11 · $150</div></div>
-<div style={{flex:1,minWidth:160,background:"#ECF7EE",borderRadius:8,padding:"14px",border:"1px solid #BBE0C3"}}><div style={{fontSize:8,color:GR,fontWeight:700,letterSpacing:1}}>SUPER BOWL LX SIDE BET</div><div style={Object.assign({fontSize:24,fontWeight:900,color:N},serif)}>🏈 Rippe</div><div style={{fontSize:10,color:GY,display:"flex",alignItems:"center",gap:4}}><Tm name="Seahawks" sz={14}/> Super Bowl LX champions · $75</div></div>
-</div>
-<Cd s={{marginBottom:16}}><Hd r="FINAL · RIPPE SWEPT BOTH POTS">2025 FINAL STANDINGS</Hd>
-{HIST.mgrs.map(function(m,i){return <div key={m.name} style={{padding:"12px 16px",borderTop:i?"1px solid #EEF2EB":"none",background:i===0?LO:"#fff"}}><div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:6}}><span style={Object.assign({fontWeight:900,fontSize:15,color:N},serif)}>{i+1}. {m.name}</span><span style={Object.assign({fontWeight:900,fontSize:18,color:i===0?O:N},serif)}>{m.tw} <span style={{fontSize:10,color:GY,fontFamily:"inherit"}}>{i===0?"":"(-"+(HIST.mgrs[0].tw-m.tw)+")"}</span></span></div><div style={{display:"flex",flexWrap:"wrap",gap:"4px 12px"}}>{m.teams.map(function(t){return <span key={t[0]} style={{fontSize:10}}><Tm name={t[0]} sz={12}/> <b>{t[1]}</b></span>})}</div></div>})}
-</Cd></div>}
-
-{tab==="rules"&&<div style={{animation:"fadeIn .25s"}}><Cd s={{marginBottom:16}}><Hd>OFFICIAL RULES</Hd><div style={{padding:"16px"}}><div style={Object.assign({fontSize:14,fontWeight:900,color:N,marginBottom:12},serif)}>WINS ARE ALL THAT MATTER</div>
-{[["THE GAME","4 managers draft 8 NFL teams each. Most combined regular season wins across all 8 teams wins the league."],["DRAFT","Snake format, 8 rounds, all 32 NFL teams. Held "+DRAFT_DATE+". Order: Swaggy, G$, Gainzy, Rippe."],["SCORING","Every regular season win counts as 1. Losses and ties count for nothing. Playoff games don't count toward the league."],["TIEBREAKER","If tied on total wins, the manager whose single best team has the most wins takes it."],["REG SEASON POT","$50 buy-in. Most wins at the end of Week 18 takes $150."],["SUPER BOWL SIDE BET","$25 buy-in. Own the champ - take the pot. The manager who drafted the Super Bowl LXI champion takes $75."]].map(function(x){return <div key={x[0]} style={{marginBottom:12}}><div style={{fontSize:9,fontWeight:800,color:O,letterSpacing:1}}>{x[0]}</div><div style={{fontSize:12,color:N,lineHeight:1.5}}>{x[1]}</div></div>})}
-</div></Cd></div>}
-
-</div>
-<div style={{textAlign:"center",padding:"10px 0 14px",fontSize:8,color:GY}}>NFL Team League {SEASON} · Defending Champ: Rippe · Super Bowl: Rippe (Seahawks)</div>
-</div>
-);
+function Hd(p){
+ return html`<div style=${{background:N,padding:"10px 16px",display:"flex",justifyContent:"space-between",alignItems:"center",gap:6,flexWrap:"wrap"}}>
+  <span className="lbl" style=${{color:"#fff",fontSize:12,fontWeight:700}}>${p.children}</span>
+  ${p.r?html`<span className="lbl" style=${{color:TAN,fontSize:10,fontWeight:700}}>${p.r}</span>`:null}
+ </div>`;
 }
-ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
+function Cd(p){
+ return html`<div style=${Object.assign({background:"#fff",borderRadius:8,overflow:"hidden",border:"1px solid #E2E8DF"},p.s||{})}>${p.children}</div>`;
+}
+function Stk(p){
+ if(!p.v)return null;
+ var w=p.v.charAt(0)==="W";
+ return html`<span className="badge stk" style=${{color:w?GR:RD,background:w?"#DCFCE7":"#FEE2E2"}}>${p.v}</span>`;
+}
+
+function App(){
+ var h=React.useState,u=React.useEffect,r=React.useRef;
+ var TABS=[["standings","Standings"],["rosters","Rosters"],["draft","Draft"],["nfl","NFL Standings"],["history","2025"],["rules","Rules"]];
+ var tabState=h(function(){var x=location.hash.slice(1);return TABS.map(function(t){return t[0]}).indexOf(x)>=0?x:"standings"});
+ var tab=tabState[0],setTab=tabState[1];
+ function go(t){setTab(t);location.hash=t}
+ var boot=r(readCache()).current;
+ var rcState=h(boot?boot.records:baseRecords());
+ var rc=rcState[0],setRc=rcState[1];
+ var srcState=h({phase:"checking",trusted:!!boot,at:boot?boot.at:BASE_DATE,error:null});
+ var src=srcState[0],setSrc=srcState[1];
+ var boostState=h({});
+ var boost=boostState[0],setBoost=boostState[1];
+ var shareState=h("idle");
+ var sharePhase=shareState[0],setShare=shareState[1];
+ var sRef=r(null);
+ var loadRef=r(function(){});
+ var trustedRef=r(!!boot);
+ var rcRef=r(boot?boot.records:baseRecords());
+ var atRef=r(boot?boot.at:BASE_DATE);
+
+ u(function(){
+  var alive=true,timer=null,seq=0;
+  function stop(){if(timer){clearInterval(timer);timer=null}}
+  function shouldPoll(records,trusted){
+   if(Date.now()>REG_SEASON_END)return false;
+   if(trusted&&maxGpOf(records)>=GAMES)return false;
+   return true;
+  }
+  function load(opts){
+   var my=++seq;
+   var manual=opts&&opts.manual;
+   if(manual)setSrc(function(s){return {phase:"checking",trusted:s.trusted,at:s.at,error:null}});
+   return fetch(ESPN_URL,{cache:"no-store"}).then(function(res){
+    if(!res.ok)throw new Error("ESPN "+res.status);
+    return res.json();
+   }).then(function(j){
+    if(!alive||my!==seq)return;
+    var p=parseApi(j);
+    if(!p)throw new Error("incomplete");
+    if(trustedRef.current&&slateGames(p)+32<slateGames(rcRef.current))throw new Error("older");
+    var at=new Date().toISOString();
+    writeCache(p,at);
+    trustedRef.current=true;
+    rcRef.current=p;
+    atRef.current=at;
+    setRc(p);
+    var fin=dataIsFinal(p);
+    setSrc({phase:fin?"final":"live",trusted:true,at:at,error:null});
+    if(!shouldPoll(p,true))stop();
+   }).catch(function(){
+    if(!alive||my!==seq)return;
+    var trusted=trustedRef.current;
+    var fin=trusted&&dataIsFinal(rcRef.current);
+    setSrc({
+     phase:!trusted?"baseline":(fin?"final":"stale"),
+     trusted:trusted,
+     at:trusted?atRef.current:BASE_DATE,
+     error:trusted?"refresh":"baseline"
+    });
+    if(!shouldPoll(rcRef.current,trusted))stop();
+   });
+  }
+  loadRef.current=load;
+  load();
+  if(shouldPoll(rcRef.current,trustedRef.current))timer=setInterval(function(){load()},REFRESH_MS);
+  return function(){alive=false;stop()};
+ },[]);
+
+ function rec(t){return rc[t]||{w:0,l:0,t:0,pf:0,pa:0,stk:"",clinch:""}}
+ function gp(t){var v=rec(t);return v.w+v.l+v.t}
+ function isElim(t){return String(rec(t).clinch||"").toLowerCase()==="e"}
+ function retry(){loadRef.current({manual:true})}
+
+ var mgrs=MNAMES.map(function(n,i){
+  var t=ROSTERS[i],tw=0,g=0,bt="",bw=-1,diff=0;
+  t.forEach(function(x){var v=rec(x);tw+=v.w;g+=gp(x);diff+=v.pf-v.pa;if(v.w>bw){bw=v.w;bt=x}});
+  var pace=g>0?Math.round(tw/g*GAMES*8):0;
+  var extra=boost[n]||0;
+  return {name:n,teams:t,tw:tw,gp:g,bt:bt,bw:bw,diff:diff,pace:pace,proj:pace+extra};
+ });
+ var ranked=[].concat(mgrs).sort(function(a,b){return b.tw-a.tw||b.bw-a.bw});
+ var champs=ranked.filter(function(m){return m.tw===ranked[0].tw&&m.bw===ranked[0].bw});
+ var topW=ranked[0].tw;
+ var totalGP=mgrs.reduce(function(a,m){return a+m.gp},0);
+ var progress=Math.min(100,totalGP/(GAMES*32)*100);
+ var week=Math.max.apply(null,Object.keys(ABBR).map(function(t){return gp(t)}));
+ var locked=src.trusted&&dataIsFinal(rc);
+
+ var badges={};ranked.forEach(function(m){badges[m.name]=[]});
+ var all=[];mgrs.forEach(function(m){m.teams.forEach(function(t){all.push({t:t,m:m.name,v:rec(t)})})});
+ var hot=all.filter(function(x){return /^W([3-9]|\d\d)/.test(x.v.stk)}).sort(function(a,b){return parseInt(b.v.stk.slice(1),10)-parseInt(a.v.stk.slice(1),10)});
+ var cold=all.filter(function(x){return /^L([3-9]|\d\d)/.test(x.v.stk)}).sort(function(a,b){return parseInt(b.v.stk.slice(1),10)-parseInt(a.v.stk.slice(1),10)});
+ var best=[].concat(all).sort(function(a,b){return b.v.w-a.v.w})[0];
+ if(best&&best.v.w>0)badges[best.m].push("Sharpshooter · "+best.t+" "+best.v.w+"W");
+ ranked.forEach(function(m){var hc=hot.filter(function(x){return x.m===m.name}).length;if(hc>=2)badges[m.name].push("On Fire · "+hc+" hot teams")});
+ var mostDiff=[].concat(mgrs).sort(function(a,b){return b.diff-a.diff})[0];if(mostDiff.diff>0)badges[mostDiff.name].push("Point Machine · +"+mostDiff.diff);
+
+ function getOwner(t){var o="";mgrs.forEach(function(m){if(m.teams.indexOf(t)>=0)o=m.name});return o}
+
+ function share(){
+  if(!sRef.current||sharePhase==="working")return;
+  setShare("working");
+  loadHtml2Canvas().then(function(h2c){
+   return h2c(sRef.current,{backgroundColor:"#F6F7F2",scale:2,useCORS:true});
+  }).then(function(canvas){
+   return new Promise(function(resolve,reject){
+    canvas.toBlob(function(blob){blob?resolve(blob):reject(new Error("empty"))},"image/png");
+   });
+  }).then(function(blob){
+   var file=new File([blob],"nfl-tl-2026.png",{type:"image/png"});
+   if(navigator.share&&navigator.canShare&&navigator.canShare({files:[file]})){
+    return navigator.share({files:[file]}).catch(function(err){if(!err||err.name!=="AbortError")throw err});
+   }
+   var a=document.createElement("a");
+   a.href=URL.createObjectURL(blob);
+   a.download=file.name;
+   a.click();
+   setTimeout(function(){URL.revokeObjectURL(a.href)},1500);
+  }).then(function(){setShare("idle")}).catch(function(){setShare("error")});
+ }
+
+ var badge=src.error&&!src.trusted?["SNAPSHOT",GL]
+  :src.error?["STALE","#B45309"]
+  :(src.phase==="final"||(locked&&src.phase!=="checking"))?["FINAL",O]
+  :src.phase==="live"?["LIVE",GR]
+  :src.trusted?["SAVED","#B45309"]
+  :["SNAPSHOT",GL];
+ var sub=src.error&&!src.trusted?"Week 5 snapshot · "+BASE_DATE+" · not current"
+  :src.error?"Last successful update "+stamp(src.at)+" · not current"
+  :src.phase==="checking"&&src.trusted?"Last successful update "+stamp(src.at)+" · checking ESPN"
+  :src.phase==="checking"?"Checking ESPN for 2026 standings"
+  :(src.phase==="final"||locked)?"Updated "+stamp(src.at)
+  :src.phase==="live"?"Updated "+stamp(src.at)+" · refreshes every 5 min"
+  :"Standings as of "+stamp(src.at);
+ var seasonLine=locked?"2026 Season Final":"REGULAR SEASON · THROUGH WEEK "+week;
+
+ var order=[].concat(MNAMES).sort(function(a,b){return PICK[a]-PICK[b]});
+ var rounds=[];
+ for(var rd=0;rd<8;rd++){
+  var row=[];
+  order.forEach(function(m,ci){
+   var pickInRd=rd%2===0?ci+1:4-ci;
+   row.push({m:m,t:ROSTERS[MNAMES.indexOf(m)][rd],pick:rd*4+pickInRd});
+  });
+  rounds.push(row);
+ }
+
+ return html`<div>
+ <div className="hdr turf" style=${{padding:"14px 20px 0"}}>
+  <div className="hdr-row" style=${{display:"flex",justifyContent:"space-between",alignItems:"flex-end"}}>
+   <div>
+    <div className="lbl" style=${{color:TAN,fontSize:9,fontWeight:700,letterSpacing:3}}>THE OFFICIAL</div>
+    <h1 style=${Object.assign({color:"#fff",fontSize:28,fontWeight:900,lineHeight:1.1},serif)}>NFL Team League <span style=${{color:TAN}}>${SEASON}</span></h1>
+   </div>
+   <div style=${{textAlign:"right"}}>
+    <div className="lbl" style=${{color:TAN,fontSize:10,fontWeight:700}}>DEFENDING CHAMP: ${CHAMPS.reg.toUpperCase()}</div>
+    <div className="lbl" style=${{fontSize:9,color:"#fff9",marginTop:2}}>Super Bowl Bet Holder: ${CHAMPS.sb} · ${CHAMPS.sbTeam}</div>
+   </div>
+  </div>
+  <div className="tabs" role="tablist">
+   ${TABS.map(function(t){return html`<button key=${t[0]} role="tab" aria-selected=${tab===t[0]?"true":"false"} className=${tab===t[0]?"on":""} onClick=${function(){go(t[0])}}>${t[1]}</button>`})}
+  </div>
+ </div>
+ <div style=${{background:O,padding:"0 20px"}}><div className="laces"></div></div>
+
+ <div className="cnt" style=${{maxWidth:1060,margin:"0 auto",padding:"14px"}}>
+  <div data-phase=${src.phase} data-locked=${locked?"1":"0"} style=${{background:"linear-gradient(90deg,"+N+",#1F5135)",borderRadius:8,padding:"10px 16px",marginBottom:14,display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:8}}>
+   <div style=${{display:"flex",alignItems:"center",gap:8}}>
+    <span className="pill" style=${{background:badge[1]}}>${badge[0]}</span>
+    <span className="status-line">${seasonLine}</span>
+   </div>
+   <div style=${{display:"flex",alignItems:"center",gap:8}}>
+    <span className="status-sub">${sub}</span>
+    ${badge[0]==="LIVE"?html`<span style=${{display:"inline-block",width:8,height:8,borderRadius:"50%",background:"#4ADE80",animation:"pulse 2s infinite"}}></span>`:null}
+   </div>
+  </div>
+
+  ${src.error?html`<div className="alert" role="alert">
+   <div>
+    <strong>${src.trusted?"Standings may be out of date":"Live standings unavailable"}</strong>
+    <p>${src.trusted
+      ?"ESPN didn't respond. Last successful update: "+stamp(src.at)+". These results are not current."
+      :"ESPN didn't respond. Showing the Week 5 snapshot from "+BASE_DATE+". This snapshot is not current."}</p>
+   </div>
+   <button className="retry-btn" onClick=${retry}>Retry</button>
+  </div>`:null}
+
+  ${locked?html`<div className="champ">
+   <div className="eyebrow">2026 Season Final</div>
+   <div className="who">${champLabel(champs)}</div>
+   <div className="sub">${champs.length>1?"Co-champions":"League champion"} · ${champs[0].tw} wins</div>
+   <div className="sub">${champs.length===1
+     ?"Best team "+champs[0].bt+" · "+champs[0].bw+" wins"
+     :champs.map(function(m){return m.name+" · "+m.bt+" "+m.bw+"W"}).join(" · ")}</div>
+  </div>`:null}
+
+  ${tab==="standings"?html`<div style=${{animation:"fadeIn .25s"}}>
+   <div className="prizes" style=${{display:"flex",gap:8,marginBottom:16,flexWrap:"wrap"}}>
+    ${[["Reg Season","$150","$50 buy-in · most wins"],["Super Bowl Winner","$75","$25 buy-in · own the champ"],["Leader",ranked[0].name,ranked[0].tw+" wins"]].map(function(x){return html`<div key=${x[0]} style=${{flex:1,minWidth:120,background:"#fff",borderRadius:8,padding:"12px",border:"1px solid #E2E8DF",borderTop:"3px solid "+O}}>
+     <div className="lbl" style=${{fontSize:8,color:GY,fontWeight:600,letterSpacing:1,textTransform:"uppercase"}}>${x[0]}</div>
+     <div style=${Object.assign({fontSize:20,fontWeight:900,color:N},serif)}>${x[1]}</div>
+     <div className="lbl" style=${{fontSize:9,color:GY}}>${x[2]}</div>
+    </div>`})}
+   </div>
+
+   <${Cd} s=${{marginBottom:16}}><div style=${{padding:"12px 16px"}}>
+    <div style=${{display:"flex",justifyContent:"space-between",marginBottom:8,gap:8}}>
+     <span className="lbl" style=${{fontSize:9,fontWeight:700,color:N,letterSpacing:1}}>SEASON PROGRESS</span>
+     <span className="lbl" style=${{fontSize:9,fontWeight:700,color:O}}>${progress.toFixed(1)}% · ${Math.round(totalGP/32*10)/10} avg GP</span>
+    </div>
+    <div className="field"><div style=${{background:"linear-gradient(90deg,#166534,"+GR+")",width:progress+"%",height:"100%",borderRadius:10}}></div><span style=${{position:"absolute",top:-6,left:"min("+progress+"%, calc(100% - 10px))",transform:"translateX(-50%)",fontSize:16,lineHeight:1}}>🏈</span></div>
+    <div className="lbl" style=${{display:"flex",justifyContent:"space-between",marginTop:6,fontSize:8,color:GY,fontWeight:700}}><span>KICKOFF</span><span>HALFWAY</span><span>WEEK 18</span></div>
+   </div></${Cd}>
+
+   <${Cd} s=${{marginBottom:16}}>
+    <div ref=${sRef}>
+     <div style=${{background:N,padding:"10px 16px",display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:6}}>
+      <span className="lbl" style=${{color:"#fff",fontSize:12,fontWeight:700}}>LEAGUE STANDINGS · ${SEASON}</span>
+      <button className="share-btn" onClick=${share}>${sharePhase==="working"?"SAVING…":"SHARE"}</button>
+     </div>
+     ${sharePhase==="error"?html`<div className="lbl" style=${{background:"#FEF3C7",color:O,padding:"8px 16px",fontSize:12,fontWeight:700}}>Couldn't build the image. Try again.</div>`:null}
+     <div style=${{overflowX:"auto"}}>
+      <table className="st" style=${{width:"100%"}}><thead><tr style=${{background:LN}}>${["#","MGR","WINS","GB","GP","PACE","PT DIFF","TOP TEAM"].map(function(hh){return html`<th key=${hh} className="lbl" style=${{padding:"8px",fontSize:8,fontWeight:800,color:hh==="WINS"?GR:hh==="PACE"?O:N,letterSpacing:1,textAlign:hh==="MGR"||hh==="TOP TEAM"?"left":"center"}}>${hh}</th>`})}</tr></thead>
+      <tbody>${ranked.map(function(m,i){return html`<tr key=${m.name} style=${{background:i===0?LO:i%2===0?"#FAFBF8":"#fff",borderTop:"1px solid #EEF2EB"}}>
+       <td style=${Object.assign({padding:"10px 8px",textAlign:"center",fontWeight:800,fontSize:15,color:i===0?O:N},serif)}>${i+1}</td>
+       <td style=${{padding:"10px 8px"}}><div style=${{fontWeight:700,fontSize:13,color:N}}>${m.name}${m.name===CHAMPS.reg?html`<span title="Defending champ" style=${{marginLeft:4}}>🏆</span>`:null}</div>${badges[m.name].length?html`<div style=${{display:"flex",gap:3,flexWrap:"wrap",marginTop:3}}>${badges[m.name].map(function(b){return html`<span className="badge chip" key=${b}>${b}</span>`})}</div>`:null}</td>
+       <td className="wins" style=${Object.assign({padding:"10px 8px",textAlign:"center",fontWeight:900,fontSize:18,color:N},serif)}>${m.tw}</td>
+       <td style=${{padding:"10px 8px",textAlign:"center",fontSize:11,color:i===0?GY:RD,fontWeight:700}}>${i===0?"-":topW-m.tw}</td>
+       <td className="gp" style=${{padding:"10px 8px",textAlign:"center",fontSize:12,color:N}}>${m.gp}</td>
+       <td style=${{padding:"10px 8px",textAlign:"center",fontSize:12,fontWeight:800,color:O}}>${m.pace}</td>
+       <td style=${{padding:"10px 8px",textAlign:"center",fontSize:11,fontWeight:700,color:m.diff>=0?GR:RD}}>${m.diff>0?"+":""}${m.diff}</td>
+       <td style=${{padding:"10px 8px",fontSize:12}}><${Tm} name=${m.bt} sz=${14} elim=${isElim(m.bt)}></${Tm}> <span style=${{color:GY}}>${m.bw}W</span></td>
+      </tr>`})}</tbody></table>
+     </div>
+    </div>
+   </${Cd}>
+
+   <div className="two" style=${{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12,marginBottom:16}}>
+    <${Cd}><${Hd} r="W3+">🔥 HOT STREAKS</${Hd}><div style=${{padding:"8px 14px"}}>${hot.length===0?html`<div className="lbl" style=${{fontSize:12,color:GY,padding:6}}>No active 3+ win streaks.</div>`:hot.slice(0,6).map(function(x){return html`<div key=${x.t} style=${{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"6px 0",borderBottom:"1px solid #EEF2EB",fontSize:13,gap:8}}><${Tm} name=${x.t} elim=${isElim(x.t)}></${Tm}><span style=${{display:"flex",gap:6,alignItems:"center"}}><span className="lbl" style=${{fontSize:9,color:O,fontWeight:700}}>${x.m}</span><${Stk} v=${x.v.stk}></${Stk}></span></div>`})}</div></${Cd}>
+    <${Cd}><${Hd} r="L3+">🥶 FROZEN TUNDRA</${Hd}><div style=${{padding:"8px 14px"}}>${cold.length===0?html`<div className="lbl" style=${{fontSize:12,color:GY,padding:6}}>No active 3+ losing streaks.</div>`:cold.slice(0,6).map(function(x){return html`<div key=${x.t} style=${{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"6px 0",borderBottom:"1px solid #EEF2EB",fontSize:13,gap:8}}><${Tm} name=${x.t} elim=${isElim(x.t)}></${Tm}><span style=${{display:"flex",gap:6,alignItems:"center"}}><span className="lbl" style=${{fontSize:9,color:O,fontWeight:700}}>${x.m}</span><${Stk} v=${x.v.stk}></${Stk}></span></div>`})}</div></${Cd}>
+   </div>
+
+   <${Cd} s=${{marginBottom:16}}><${Hd} r="DRAG TO ADJUST">WHAT-IF · PROJECTED FINAL WINS</${Hd}><div style=${{padding:"14px 16px"}}>
+    <div className="lbl" style=${{fontSize:12,color:GY,marginBottom:12,lineHeight:1.45}}>Current pace over a full 136-game slate (8 teams × 17). Slide to add or subtract wins and see how the race shakes out.</div>
+    ${[].concat(mgrs).sort(function(a,b){return b.proj-a.proj}).map(function(m,i){var mx=Math.max.apply(null,mgrs.map(function(z){return z.proj}))||1;return html`<div key=${m.name} style=${{marginBottom:12}}>
+     <div style=${{display:"flex",justifyContent:"space-between",fontSize:12,marginBottom:4}}><span className="lbl" style=${{fontWeight:700,color:N,fontSize:11}}>${i===0?"👑 ":""}${m.name}</span><span style=${Object.assign({fontWeight:900,color:i===0?O:N,fontSize:14},serif)}>${m.proj}</span></div>
+     <div style=${{background:"#E4ECE1",borderRadius:6,height:6,marginBottom:6}}><div style=${{width:Math.max(0,m.proj/mx*100)+"%",height:"100%",borderRadius:6,background:i===0?O:"#4B6B57"}}></div></div>
+     <input type="range" min="-15" max="15" value=${boost[m.name]||0} aria-label=${"Adjust "+m.name} onChange=${function(e){var v=+e.target.value;setBoost(function(b){var n=Object.assign({},b);n[m.name]=v;return n})}} style=${{width:"100%",accentColor:O}} />
+    </div>`})}
+    <button className="reset-btn" onClick=${function(){setBoost({})}}>RESET</button>
+   </div></${Cd}>
+
+   <${Cd} s=${{marginBottom:16}}><${Hd} r="$75 POT">SUPER BOWL LXI CHAMPION</${Hd}><div style=${{padding:"12px 16px"}}>
+    <div className="lbl" style=${{fontSize:12,color:GY,marginBottom:10,lineHeight:1.45}}>Own the champ - take the pot. Each manager's top contender by wins:</div>
+    ${ranked.map(function(m){var top=[].concat(m.teams).sort(function(a,b){return rec(b).w-rec(a).w||gp(a)-gp(b)})[0];var v=rec(top);return html`<div key=${m.name} style=${{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"7px 0",borderBottom:"1px solid #EEF2EB",fontSize:13,gap:8}}>
+     <span style=${{fontWeight:700,color:N,width:70}}>${m.name}</span><${Tm} name=${top} elim=${isElim(top)}></${Tm}><span style=${Object.assign({fontWeight:900,fontSize:14,color:N},serif)}>${v.w} <span className="lbl" style=${{fontSize:9,color:GY,fontFamily:"inherit"}}>WINS</span></span>
+    </div>`})}
+   </div></${Cd}>
+  </div>`:null}
+
+  ${tab==="rosters"?html`<div className="rosters" style=${{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(250px,1fr))",gap:12,animation:"fadeIn .25s"}}>
+   ${ranked.map(function(m,mi){var srt=[].concat(m.teams).sort(function(a,b){return rec(b).w-rec(a).w});return html`<${Cd} key=${m.name}>
+    <div style=${{background:mi===0?O:N,padding:"10px 14px",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+     <span style=${{color:"#fff",fontWeight:700,fontSize:13}}>${m.name} <span className="lbl" style=${{fontSize:9,opacity:.7}}>· Pick ${PICK[m.name]}</span></span>
+     <span style=${Object.assign({color:"#fff",fontWeight:900,fontSize:18},serif)}>${m.tw}</span>
+    </div>
+    <table style=${{width:"100%"}}><thead><tr style=${{background:LN}}>${["TEAM","WINS","W-L-T","STK"].map(function(x){return html`<th key=${x} className="lbl" style=${{padding:"6px 8px",fontSize:8,fontWeight:700,color:N,textAlign:x==="TEAM"?"left":"center"}}>${x}</th>`})}</tr></thead>
+    <tbody>${srt.map(function(t){var v=rec(t);return html`<tr key=${t} style=${{borderTop:"1px solid #EEF2EB"}}>
+     <td style=${{padding:"7px 8px",fontSize:13}}><${Tm} name=${t} elim=${isElim(t)}></${Tm}></td>
+     <td style=${Object.assign({padding:"7px 8px",fontSize:14,textAlign:"center",fontWeight:900,color:N},serif)}>${v.w}</td>
+     <td style=${{padding:"7px 8px",fontSize:12,textAlign:"center",color:GY}}>${wlt(v)}</td>
+     <td style=${{padding:"7px 8px",textAlign:"center"}}><${Stk} v=${v.stk}></${Stk}></td>
+    </tr>`})}</tbody></table>
+   </${Cd}>`})}
+  </div>`:null}
+
+  ${tab==="draft"?html`<div style=${{animation:"fadeIn .25s"}}><${Cd}>
+   <${Hd} r="LOCKED · SNAKE · 8 RDS">${SEASON} DRAFT · ${DRAFT_DATE.toUpperCase()}</${Hd}>
+   <div className="draft-scroll"><table className="dt" style=${{width:"100%",minWidth:460}}><thead><tr style=${{background:LN}}>
+    <th className="lbl" style=${{padding:"8px",fontSize:8,width:34,color:N}}>RD</th>
+    ${order.map(function(m){return html`<th key=${m} className="lbl" style=${{padding:"8px",fontSize:9,fontWeight:800,color:N,textAlign:"left"}}>${m} <span style=${{color:GY,fontWeight:600}}>#${PICK[m]}</span></th>`})}
+   </tr></thead><tbody>
+    ${rounds.map(function(row,ri){return html`<tr key=${ri} style=${{borderTop:"1px solid #EEF2EB",background:ri%2?"#FAFBF8":"#fff"}}>
+     <td style=${{padding:"8px",textAlign:"center",fontWeight:800,fontSize:12,color:O}}>${ri+1}${ri%2===0?"→":"←"}</td>
+     ${row.map(function(c){var v=rec(c.t);return html`<td key=${c.m} style=${{padding:"8px",fontSize:12}}><div style=${{display:"flex",alignItems:"center",justifyContent:"space-between",gap:4}}><span><span className="lbl" style=${{fontSize:8,color:GY,marginRight:4}}>${c.pick}</span><${Tm} name=${c.t} sz=${14} elim=${isElim(c.t)}></${Tm}></span><span className="lbl" style=${{fontSize:9,color:GY,fontWeight:700}}>${v.w}W</span></div></td>`})}
+    </tr>`})}
+   </tbody></table></div>
+   <div className="draft-cards">
+    ${rounds.map(function(row,ri){return html`<section className="draft-round" key=${"c"+ri}>
+     <h3>ROUND ${ri+1} ${ri%2===0?"→":"←"}</h3>
+     <div className="draft-grid">
+      ${row.map(function(c){var v=rec(c.t);return html`<div className="draft-pick" key=${c.m}>
+       <div className="meta"><span>${c.m}</span><span>#${c.pick}</span></div>
+       <div style=${{display:"flex",justifyContent:"space-between",alignItems:"center",gap:6}}>
+        <${Tm} name=${c.t} sz=${16} elim=${isElim(c.t)}></${Tm}>
+        <span style=${{fontWeight:800,color:GY,fontSize:12}}>${v.w}W</span>
+       </div>
+      </div>`})}
+     </div>
+    </section>`})}
+   </div>
+  </${Cd}></div>`:null}
+
+  ${tab==="nfl"?html`<div style=${{animation:"fadeIn .25s"}}>
+   <div className="divs" style=${{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}}>
+    ${DIVS.map(function(d){var srt=[].concat(d.teams).sort(function(a,b){var A=rec(a),B=rec(b);return B.w-A.w||gp(a)-gp(b)});return html`<${Cd} key=${d.name}>
+     <${Hd} r=${d.conf}>${d.name.toUpperCase()}</${Hd}>
+     <div className="nfl-d"><table style=${{width:"100%"}}><thead><tr style=${{background:LN}}>${["TEAM","MGR","GP","W","L","T","DIFF"].map(function(x){return html`<th key=${x} className="lbl" style=${{padding:"6px",fontSize:8,fontWeight:700,color:N,textAlign:x==="TEAM"||x==="MGR"?"left":"center"}}>${x}</th>`})}</tr></thead>
+     <tbody>${srt.map(function(t,i){var v=rec(t),df=v.pf-v.pa;return html`<tr key=${t} style=${{borderTop:i===1?"2px dashed #B9C8B3":"1px solid #EEF2EB",background:i===0?LO:"#fff"}}>
+      <td style=${{padding:"6px",fontSize:12}}><${Tm} name=${t} sz=${14} elim=${isElim(t)}></${Tm}></td>
+      <td className="lbl" style=${{padding:"6px",fontSize:9,color:O,fontWeight:700}}>${getOwner(t)}</td>
+      <td style=${{padding:"6px",fontSize:12,textAlign:"center"}}>${gp(t)}</td>
+      <td style=${{padding:"6px",fontSize:12,textAlign:"center",fontWeight:800}}>${v.w}</td>
+      <td style=${{padding:"6px",fontSize:12,textAlign:"center"}}>${v.l}</td>
+      <td style=${{padding:"6px",fontSize:12,textAlign:"center"}}>${v.t}</td>
+      <td style=${{padding:"6px",fontSize:12,textAlign:"center",color:df>=0?GR:RD}}>${df>0?"+":""}${df}</td>
+     </tr>`})}</tbody></table></div>
+     <div className="nfl-m">${srt.map(function(t,i){var v=rec(t),df=v.pf-v.pa;return html`<div key=${t} className="nfl-row" style=${{borderTop:i===1?"2px dashed #B9C8B3":"1px solid #EEF2EB",background:i===0?LO:"#fff"}}>
+      <div style=${{display:"flex",justifyContent:"space-between",gap:8,alignItems:"center"}}>
+       <${Tm} name=${t} sz=${16} elim=${isElim(t)}></${Tm}>
+       <span style=${{fontWeight:800,fontSize:13}}>${wlt(v)}</span>
+      </div>
+      <div className="lbl" style=${{display:"flex",justifyContent:"space-between",marginTop:4,fontSize:12,fontWeight:700}}>
+       <span style=${{color:O}}>${getOwner(t)}</span>
+       <span>GP ${gp(t)}</span>
+       <span style=${{color:df>=0?GR:RD}}>${df>0?"+":""}${df}</span>
+      </div>
+     </div>`})}</div>
+    </${Cd}>`})}
+   </div>
+   <div className="lbl" style=${{fontSize:9,color:GY,marginTop:8}}>Sorted by wins. Shaded row above the dashed line = division leader.</div>
+  </div>`:null}
+
+  ${tab==="history"?html`<div style=${{animation:"fadeIn .25s"}}>
+   <div className="prizes" style=${{display:"flex",gap:8,marginBottom:16,flexWrap:"wrap"}}>
+    <div style=${{flex:1,minWidth:160,background:LO,borderRadius:8,padding:"14px",border:"1px solid #E9D3BC"}}>
+     <div className="lbl" style=${{fontSize:8,color:O,fontWeight:700,letterSpacing:1}}>2025 REGULAR SEASON CHAMPION</div>
+     <div style=${Object.assign({fontSize:24,fontWeight:900,color:N},serif)}>🏆 Rippe</div>
+     <div className="lbl" style=${{fontSize:10,color:GY}}>83 wins · won by 11 · $150</div>
+    </div>
+    <div style=${{flex:1,minWidth:160,background:"#ECF7EE",borderRadius:8,padding:"14px",border:"1px solid #BBE0C3"}}>
+     <div className="lbl" style=${{fontSize:8,color:GR,fontWeight:700,letterSpacing:1}}>SUPER BOWL LX SIDE BET</div>
+     <div style=${Object.assign({fontSize:24,fontWeight:900,color:N},serif)}>🏈 Rippe</div>
+     <div className="lbl" style=${{fontSize:10,color:GY,display:"flex",alignItems:"center",gap:4}}><${Tm} name="Seahawks" sz=${14} elim=${false}></${Tm}> Super Bowl LX champions · $75</div>
+    </div>
+   </div>
+   <${Cd} s=${{marginBottom:16}}><${Hd} r="FINAL · RIPPE SWEPT BOTH POTS">2025 FINAL STANDINGS</${Hd}>
+    ${HIST.mgrs.map(function(m,i){return html`<div key=${m.name} style=${{padding:"12px 16px",borderTop:i?"1px solid #EEF2EB":"none",background:i===0?LO:"#fff"}}>
+     <div style=${{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:6,gap:8}}>
+      <span style=${Object.assign({fontWeight:900,fontSize:15,color:N},serif)}>${i+1}. ${m.name}</span>
+      <span style=${Object.assign({fontWeight:900,fontSize:18,color:i===0?O:N},serif)}>${m.tw} <span className="lbl" style=${{fontSize:10,color:GY,fontFamily:"inherit"}}>${i===0?"":"(-"+(HIST.mgrs[0].tw-m.tw)+")"}</span></span>
+     </div>
+     <div style=${{display:"flex",flexWrap:"wrap",gap:"4px 12px"}}>${m.teams.map(function(t){return html`<span key=${t[0]} className="lbl" style=${{fontSize:10}}><${Tm} name=${t[0]} sz=${12} elim=${false}></${Tm}> <b>${t[1]}</b></span>`})}</div>
+    </div>`})}
+   </${Cd}>
+  </div>`:null}
+
+  ${tab==="rules"?html`<div style=${{animation:"fadeIn .25s"}}><${Cd} s=${{marginBottom:16}}><${Hd}>OFFICIAL RULES</${Hd}><div style=${{padding:"16px"}}>
+   <div style=${Object.assign({fontSize:14,fontWeight:900,color:N,marginBottom:12},serif)}>WINS ARE ALL THAT MATTER</div>
+   ${[["THE GAME","4 managers draft 8 NFL teams each. Most combined regular season wins across all 8 teams wins the league."],["DRAFT","Snake format, 8 rounds, all 32 NFL teams. Held "+DRAFT_DATE+". Order: Swaggy, G$, Gainzy, Rippe."],["SCORING","Every regular season win counts as 1. Losses and ties count for nothing. Playoff games don't count toward the league."],["TIEBREAKER","If tied on total wins, the manager whose single best team has the most wins takes it."],["REG SEASON POT","$50 buy-in. Most wins at the end of Week 18 takes $150."],["SUPER BOWL SIDE BET","$25 buy-in. Own the champ - take the pot. The manager who drafted the Super Bowl LXI champion takes $75."]].map(function(x){return html`<div key=${x[0]} style=${{marginBottom:12}}><div className="lbl" style=${{fontSize:9,fontWeight:800,color:O,letterSpacing:1}}>${x[0]}</div><div style=${{fontSize:13,color:N,lineHeight:1.5}}>${x[1]}</div></div>`})}
+  </div></${Cd}></div>`:null}
+ </div>
+ <div className="lbl" style=${{textAlign:"center",padding:"10px 12px 14px",fontSize:12,color:GY}}>NFL Team League ${SEASON} · Defending Champ: Rippe · Super Bowl: Rippe (Seahawks)</div>
+ </div>`;
+}
+ReactDOM.createRoot(document.getElementById("root")).render(html`<${App} />`);
 </script>
 </body>
 </html>
